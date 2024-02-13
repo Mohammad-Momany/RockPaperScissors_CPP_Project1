@@ -1,14 +1,15 @@
 #include <iostream>
-#include <windows.h>
+#include <string>
+
 using namespace std;
 
 
 enum enumGameOptions { Invalid = 0, Rock = 1, Scissors = 2, Paper = 3};
 
 struct structGameResult { 
-	int DrawTimes;
-	int WinTimes;
-	int LoseTimes;
+	short int DrawTimes;
+	short int WinTimes;
+	short int LoseTimes;
 };
 
 string ToLowerCase(string word) {
@@ -79,24 +80,28 @@ enumGameOptions ReadGameOptions(string Message) {
 }
 
 
-void CountGameResult(enumGameOptions UserChoose, int ComputerChoose, structGameResult &GameResult) {
+void CountGameResult(enumGameOptions UserChoose, enumGameOptions ComputerChoose, structGameResult &GameResult) {
+
+	bool RockWin = (UserChoose == enumGameOptions::Rock && ComputerChoose == enumGameOptions::Scissors);
+	bool PaperWin = (UserChoose == enumGameOptions::Paper && ComputerChoose == enumGameOptions::Rock);
+	bool ScissorsWin = (UserChoose == enumGameOptions::Scissors && ComputerChoose == enumGameOptions::Paper);
 
 	if (UserChoose == ComputerChoose)
 	{
 		system("Color 60");
-		cout << "Draw";
+		cout << "Draw\n";
 		GameResult.DrawTimes++;
 	}
-	else if (UserChoose > ComputerChoose)
+	else if ( RockWin || PaperWin || ScissorsWin)
 	{
 		system("Color 20");
-		cout << "You Win!";
+		cout << "You Win!\n";
 		GameResult.WinTimes++;
 	}
 	else
 	{
 		system("Color 40");
-		cout << "Game Over!";
+		cout << "You Lose!\n";
 		GameResult.LoseTimes++;
 	}
 }
@@ -104,21 +109,28 @@ void CountGameResult(enumGameOptions UserChoose, int ComputerChoose, structGameR
 structGameResult GameCompetition(int GameTimes)
 {
 	structGameResult GameResult;
+	GameResult.DrawTimes = 0;
+	GameResult.WinTimes = 0;
+	GameResult.LoseTimes = 0;
 
 	for (int i = 0; i < GameTimes; i++)
 	{
-		enumGameOptions UserChoose = ReadGameOptions("Plase Enter your choose: [1] Rock, [2] Paper, [3] Scissors\n");
-
 		int RandomNum = RandomNumber(1, 3);
+		enumGameOptions UserChoose = ReadGameOptions("Plase Enter your choose: [1] Rock, [2] Scissors , [3] Paper\n");
+		enumGameOptions ComputerChoose = ConvertInputToEnumGameOptions(to_string(RandomNum));
 
-		CountGameResult(UserChoose, RandomNum, GameResult);
+		cout << "Computer Choose: " << RandomNum << '\n';
+		cout << "User Choose: " << UserChoose << '\n';
+
+		CountGameResult(UserChoose, ComputerChoose, GameResult);
 	}
 	return GameResult;
 }
 int main()
-{
+{ 
 	srand((unsigned)time(NULL));
 
+	
 	int GameTimes = ReadFromToPositiveNumber("Please enter the game time from 1 to 10\n", 1, 10);
 
 	structGameResult GameResult = GameCompetition(GameTimes);

@@ -25,6 +25,7 @@ string ToLowerCase(string word) {
 
 	return word;
 }
+
 int RandomNumber(int From, int To) {
 	// Function to generate a random number
 	int randNum = rand() % (To - From + 1) + From;
@@ -43,6 +44,20 @@ int ReadFromToPositiveNumber(string Message, int From, int To)
 	return InputNumber;
 }
 
+string enumToString(enumGameOptions option) {
+	switch (option) {
+	case Invalid:
+		return "Invalid";
+	case Rock:
+		return "Rock";
+	case Scissors:
+		return "Scissors";
+	case Paper:
+		return "Paper";
+	default:
+		return "Unknown";
+	}
+}
 
 enumGameOptions ConvertInputToEnumGameOptions(string input) {
 
@@ -82,17 +97,17 @@ enumGameOptions ReadGameOptions(string Message) {
 
 void CountGameResult(enumGameOptions UserChoose, enumGameOptions ComputerChoose, structGameResult &GameResult) {
 
-	bool RockWin = (UserChoose == enumGameOptions::Rock && ComputerChoose == enumGameOptions::Scissors);
-	bool PaperWin = (UserChoose == enumGameOptions::Paper && ComputerChoose == enumGameOptions::Rock);
-	bool ScissorsWin = (UserChoose == enumGameOptions::Scissors && ComputerChoose == enumGameOptions::Paper);
-
 	if (UserChoose == ComputerChoose)
 	{
 		system("Color 60");
 		cout << "Draw\n";
 		GameResult.DrawTimes++;
 	}
-	else if ( RockWin || PaperWin || ScissorsWin)
+	else if (
+			(UserChoose == enumGameOptions::Rock && ComputerChoose == enumGameOptions::Scissors) ||
+			(UserChoose == enumGameOptions::Paper && ComputerChoose == enumGameOptions::Rock) ||
+			(UserChoose == enumGameOptions::Scissors && ComputerChoose == enumGameOptions::Paper)
+			)
 	{
 		system("Color 20");
 		cout << "You Win!\n";
@@ -106,37 +121,42 @@ void CountGameResult(enumGameOptions UserChoose, enumGameOptions ComputerChoose,
 	}
 }
 
-structGameResult GameCompetition(int GameTimes)
+void PrintResult(structGameResult &GameResult) {
+	cout << "WinTimes: " << GameResult.WinTimes << "\n";
+	cout << "DrawTimes: " << GameResult.DrawTimes << "\n";
+	cout << "LoseTimes: " << GameResult.LoseTimes << "\n";
+}
+
+void PrintChooses(enumGameOptions UserChoose, enumGameOptions ComputerChoose) {
+
+	cout << "User Choose: " << enumToString(UserChoose) << '\n';
+	cout << "Computer Choose: " << enumToString(ComputerChoose) << '\n';
+}
+
+structGameResult StartTheGame()
 {
+	int GameTimes = 0;
 	structGameResult GameResult;
-	GameResult.DrawTimes = 0;
-	GameResult.WinTimes = 0;
-	GameResult.LoseTimes = 0;
+
+	GameTimes = ReadFromToPositiveNumber("Please enter the game time from 1 to 10\n", 1, 10);
 
 	for (int i = 0; i < GameTimes; i++)
 	{
 		int RandomNum = RandomNumber(1, 3);
-		enumGameOptions UserChoose = ReadGameOptions("Plase Enter your choose: [1] Rock, [2] Scissors , [3] Paper\n");
-		enumGameOptions ComputerChoose = ConvertInputToEnumGameOptions(to_string(RandomNum));
 
-		cout << "Computer Choose: " << RandomNum << '\n';
-		cout << "User Choose: " << UserChoose << '\n';
+		enumGameOptions UserChoose = ReadGameOptions("Plase Enter your choose: [1] Rock, [2] Scissors , [3] Paper\n");
+
+		enumGameOptions ComputerChoose = ConvertInputToEnumGameOptions(to_string(RandomNum));
 
 		CountGameResult(UserChoose, ComputerChoose, GameResult);
 	}
-	return GameResult;
+
+	PrintResult(GameResult);
 }
+
 int main()
 { 
 	srand((unsigned)time(NULL));
 
-	
-	int GameTimes = ReadFromToPositiveNumber("Please enter the game time from 1 to 10\n", 1, 10);
-
-	structGameResult GameResult = GameCompetition(GameTimes);
-
-	cout << "WinTimes: " << GameResult.WinTimes << "\n";
-	cout << "DrawTimes: " << GameResult.DrawTimes << "\n";
-	cout << "LoseTimes: " << GameResult.LoseTimes << "\n";
-
+	StartTheGame();
 }

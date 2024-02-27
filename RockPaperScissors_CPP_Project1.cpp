@@ -133,7 +133,7 @@ void PrintChooses(enumGameOptions UserChoose, enumGameOptions ComputerChoose) {
 	cout << "Computer Choose: " << enumToString(ComputerChoose) << '\n';
 }
 
-structGameResult StartTheGame()
+void StartTheGame()
 {
 	int GameTimes = 0;
 	structGameResult GameResult;
@@ -148,6 +148,8 @@ structGameResult StartTheGame()
 
 		enumGameOptions ComputerChoose = ConvertInputToEnumGameOptions(to_string(RandomNum));
 
+		PrintChooses(UserChoose, ComputerChoose);
+
 		CountGameResult(UserChoose, ComputerChoose, GameResult);
 	}
 
@@ -159,4 +161,6 @@ int main()
 	srand((unsigned)time(NULL));
 
 	StartTheGame();
+
+	return 0;
 }

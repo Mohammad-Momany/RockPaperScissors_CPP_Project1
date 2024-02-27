@@ -7,9 +7,9 @@ using namespace std;
 enum enumGameOptions { Invalid = 0, Rock = 1, Scissors = 2, Paper = 3};
 
 struct structGameResult { 
-	short int DrawTimes;
-	short int WinTimes;
-	short int LoseTimes;
+	short int DrawTimes = 0;
+	short int WinTimes = 0;
+	short int LoseTimes = 0;
 };
 
 string ToLowerCase(string word) {
@@ -137,6 +137,7 @@ void StartTheGame()
 {
 	int GameTimes = 0;
 	structGameResult GameResult;
+
 
 	GameTimes = ReadFromToPositiveNumber("Please enter the game time from 1 to 10\n", 1, 10);
 
